@@ -10,7 +10,7 @@
      
     $query = "SELECT DATE_FORMAT(time, '%Y-%m-%d %H:%i:%s') \"time\", visible_light\n".
 		"FROM raw_data\n".
-		"WHERE time >= CURRENT_TIMESTAMP - INTERVAL 1 MINUTE";
+		"WHERE time >= CURRENT_TIMESTAMP - INTERVAL 5 MINUTE";
 		
     $result = $conn->query($query);
     if (!$result) {
