@@ -1,5 +1,4 @@
 $(document).ready(function() {
-  console.log("hi");
   $.ajax({
     url: "http://localhost/chart_data.php",
     type: "GET",
