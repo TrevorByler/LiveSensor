@@ -1,4 +1,5 @@
 <?php
+    header('Access-Control-Allow-Origin: *');
     $servername = "localhost";   
     $username = "root";
     $password = "logic";
@@ -8,11 +9,16 @@
       die("Connection failed: " . $conn->connect_error);
     }
      
-    $query = "SELECT DATE_FORMAT(time, '%Y-%m-%d %H:%i:%s') \"time\", visible_light\n".
-		"FROM raw_data\n".
-		"WHERE time >= CURRENT_TIMESTAMP - INTERVAL 5 MINUTE";
+    $query1 = "SELECT *\n".
+		"FROM (SELECT @row := @row +1 AS rownum, ".
+        "DATE_FORMAT(time, '%Y-%m-%d %H:%i:%s') \"time\", visible_light\n".
+            "FROM (SELECT @row := 0) r, raw_data) ranked\n".
+		"WHERE rownum % 500 = 1 AND time > CURRENT_TIME - INTERVAL 1 DAY";
+        
+    $query2 = "SELECT DATE_FORMAT(time, '%Y-%m-%d %H:%i:%s') \"time\", visible_light\n".
+        "FROM raw_data WHERE time > CURRENT_TIME - INTERVAL 3 MINUTE";
 		
-    $result = $conn->query($query);
+    $result = $conn->query($query1);
     if (!$result) {
 		trigger_error('Invalid query: ' .$conn->error);
 	}
