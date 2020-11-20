@@ -1,5 +1,6 @@
 <?php
     header('Access-Control-Allow-Origin: *');
+    $option = $_POST['args'];
     $servername = "localhost";   
     $username = "root";
     $password = "logic";
@@ -8,17 +9,17 @@
     if ($conn->connect_error) {
       die("Connection failed: " . $conn->connect_error);
     }
-     
-    $query1 = "SELECT *\n".
-		"FROM (SELECT @row := @row +1 AS rownum, ".
-        "DATE_FORMAT(time, '%Y-%m-%d %H:%i:%s') \"time\", visible_light\n".
-            "FROM (SELECT @row := 0) r, raw_data) ranked\n".
-		"WHERE rownum % 500 = 1 AND time > CURRENT_TIME - INTERVAL 1 DAY";
-        
-    $query2 = "SELECT DATE_FORMAT(time, '%Y-%m-%d %H:%i:%s') \"time\", visible_light\n".
-        "FROM raw_data WHERE time > CURRENT_TIME - INTERVAL 3 MINUTE";
-		
-    $result = $conn->query($query1);
+    if($option=='day') { 
+        $query = "SELECT *\n".
+            "FROM (SELECT @row := @row +1 AS rownum, ".
+            "DATE_FORMAT(time, '%Y-%m-%d %H:%i:%s') \"time\", visible_light\n".
+                "FROM (SELECT @row := 0) r, raw_data) ranked\n".
+            "WHERE rownum % 500 = 1 AND time > CURRENT_TIME - INTERVAL 1 DAY";
+    } else {    
+        $query = "SELECT DATE_FORMAT(time, '%Y-%m-%d %H:%i:%s') \"time\", visible_light\n".
+            "FROM raw_data WHERE time > CURRENT_TIME - INTERVAL 5 MINUTE";
+	}	
+    $result = $conn->query($query);
     if (!$result) {
 		trigger_error('Invalid query: ' .$conn->error);
 	}

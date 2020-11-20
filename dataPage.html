@@ -38,8 +38,7 @@
   <label for="minute">Past 5 Minutes</label><br>
   <input type="radio" id="day" name="timespan" value="day">
   <label for="female">Past 24 hours</label><br>
-  <button onclick="callPHP(document.querySelector('input[name=" timespan"]:checked').value>
-    Refresh Data</button>
+  <button onclick="callPHP();">Refresh Data</button>
 
   <div id="chart-container">FusionCharts will render here</div>
   <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
@@ -49,38 +48,42 @@
   <script src="js/themes/fusioncharts.theme.zune.js"></script>
   <!-- <script src="js/app.js"></script> -->
   <script>
-    function callPHP(params) {
-      var httpc = new XMLHttpRequest(); // simplified for clarity
-      var url = "http://localhost/chart_data.php";
-      httpc.open("POST", url, true); // sending as POST
+    function callPHP() {
+      var option = $('input[name="timespan"]:checked').val();
+      console.log(option);
+      $.ajax({
+        type: "POST",
+        url: "http://10.0.0.234/chart_data.php",
+        dataType: 'json',
+        data: {args: option},
+        success: function(obj) {
+          
+          if(!('error' in obj)){
 
-      httpc.onreadystatechange = function () { //Call a function when the state changes.
-        if (httpc.readyState == 4 && httpc.status == 200) { // complete and no errors
-
-          chartData = data;
-          const chartConfig = {
-            type: 'line',
-            renderAt: 'chart-container',
-            width: '100%',
-            height: '400',
-            dataFormat: 'json',
-            dataSource: {
-              // Chart Configuration
-              "chart": {
-                "caption": "Room Brightness",
-                "xAxisName": "Timestamp",
-                "yAxisName": "Level of Visible Light",
-                "theme": "fusion",
-              },
-              // Chart Data
-              "data": chartData
+            var chartData = obj;
+            const chartConfig = {
+              type: 'line',
+              renderAt: 'chart-container',
+              width: '100%',
+              height: '400',
+              dataFormat: 'json',
+              dataSource: {
+                // Chart Configuration
+                "chart": {
+                  "caption": "Room Brightness",
+                  "xAxisName": "Timestamp",
+                  "yAxisName": "Level of Visible Light",
+                  "theme": "fusion",
+                },
+                // Chart Data
+                "data": chartData
+              }
             }
-          };
-          var apiChart = new FusionCharts(chartConfig);
-          apiChart.render();
+            var apiChart = new FusionCharts(chartConfig);
+            apiChart.render();
+          }
         }
-      }
-      httpc.send(params);
+      });
     }
   </script>
 </body>
