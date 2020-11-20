@@ -21,7 +21,6 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 
 sql_delete = "DELETE FROM raw_data WHERE time < CURRENT_TIMESTAMP - INTERVAL 1 DAY"
-# condition = ("CURRENT_TIMESTAMP - INTERVAL 5 MINUTE",)
 mycursor.execute(sql_delete)
 mydb.commit()
 print(mycursor.rowcount, "record(s) deleted")
@@ -29,7 +28,6 @@ print(mycursor.rowcount, "record(s) deleted")
 # normalizes output to approximately the percentage of max light
 n_factor  = 10/2147483647.0
 
-count = 0
 last_del = time.time()
 
 while True:
@@ -50,6 +48,5 @@ while True:
         print(mycursor.rowcount, "record(s) deleted")
         last_del = time.time()
         
-    count = count + 1
     time.sleep(2)
 
