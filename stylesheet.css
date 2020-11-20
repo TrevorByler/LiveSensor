@@ -23,7 +23,7 @@
   
   .nav {
       background-color: #333;
-    border: 1px solid #333;
+    border: 1px solid rgb(0, 0, 0);
     text-align: center;
     size: 15px;
       
@@ -65,8 +65,8 @@
 
  
 .content {
-  margin-left: 75px;
-  margin-right: 75px;
+  margin-left: 2px;
+  margin-right: 2px;
   font-size: 30px;
   text-align: center;
   margin-top: 50px;
